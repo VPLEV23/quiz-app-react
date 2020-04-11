@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Question from "./question";
+import Question from "./Question";
 import { loadQuestions } from "../helpers/QuestionsHelper";
-import HUD from "./hud";
-import SaveScoreForm from "./saveScoreForm";
+import HUD from "./HUD";
+import SaveScoreForm from "./SaveScoreForm";
 
 export default class Game extends Component {
   constructor(props) {
@@ -34,7 +34,10 @@ export default class Game extends Component {
 
   changeQuestion = (bonus = 0) => {
     if (this.state.questions.length === 0) {
-      return this.setState({ done: true });
+      return this.setState((prevState) => ({
+        done: true,
+        score: prevState.score + bonus,
+      }));
     }
 
     const randomQuestionIndex = Math.floor(
@@ -54,24 +57,28 @@ export default class Game extends Component {
   };
 
   render() {
+    const {
+      loading,
+      done,
+      score,
+      currentQuestion,
+      questionNumber,
+    } = this.state;
     return (
       <>
-        {this.state.loading && !this.state.done && <div id="loader" />}
+        {loading && !done && <div id="loader" />}
 
-        {!this.state.loading && !this.state.done && this.state.currentQuestion && (
+        {!loading && !done && currentQuestion && (
           <div>
-            <HUD
-              score={this.state.score}
-              questionNumber={this.state.questionNumber}
-            />
+            <HUD score={score} questionNumber={questionNumber} />
             <Question
-              question={this.state.currentQuestion}
+              question={currentQuestion}
               changeQuestion={this.changeQuestion}
             />
           </div>
         )}
 
-        {this.state.done && <SaveScoreForm score={this.state.score} />}
+        {done && <SaveScoreForm score={score} />}
       </>
     );
   }

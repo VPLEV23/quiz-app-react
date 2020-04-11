@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import Home from "./components/home";
+import Home from "./components/Home";
 import { Route, BrowserRouter as Router } from "react-router-dom";
 import Game from "./components/Game";
 import HighScores from "./components/HighScores";

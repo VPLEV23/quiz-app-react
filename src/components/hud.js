@@ -1,5 +1,5 @@
 import React from "react";
-import ProgressBar from "./progressBar";
+import ProgressBar from "./ProgressBar";
 
 export default function HUD({ score, questionNumber }) {
   return (
