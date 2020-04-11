@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Question from "./question";
 import { loadQuestions } from "../helpers/QuestionsHelper";
+import HUD from "./hud";
 
 export default class Game extends Component {
   constructor(props) {
@@ -10,6 +11,8 @@ export default class Game extends Component {
       currentQuestion: null,
       loading: true,
       score: 0,
+      questionNumber: 0,
+      done: false,
     };
   }
   async componentDidMount() {
@@ -29,6 +32,10 @@ export default class Game extends Component {
   }
 
   changeQuestion = (bonus = 0) => {
+    if (this.state.questions.length === 0) {
+      return this.setState({ done: true });
+    }
+
     const randomQuestionIndex = Math.floor(
       Math.random() * this.state.questions.length
     );
@@ -41,20 +48,28 @@ export default class Game extends Component {
       currentQuestion,
       loading: false,
       score: prevState.score + bonus,
+      questionNumber: prevState.questionNumber + 1,
     }));
-    console.log(this.state.score);
   };
 
   render() {
     return (
       <>
-        {this.state.loading && <div id="loader" />}
-        {!this.state.loading && this.state.currentQuestion && (
-          <Question
-            question={this.state.currentQuestion}
-            changeQuestion={this.changeQuestion}
-          />
+        {this.state.loading && !this.state.done && <div id="loader" />}
+
+        {!this.state.loading && !this.state.done && this.state.currentQuestion && (
+          <div>
+            <HUD
+              score={this.state.score}
+              questionNumber={this.state.questionNumber}
+            />
+            <Question
+              question={this.state.currentQuestion}
+              changeQuestion={this.changeQuestion}
+            />
+          </div>
         )}
+        {this.state.done && <h1>DONE!!</h1>}
       </>
     );
   }
